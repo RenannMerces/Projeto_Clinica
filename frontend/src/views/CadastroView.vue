@@ -84,7 +84,7 @@ export default {
     padding:30px 20px;
   }
   .logo{
-    width:120px;
+    width:150px;
   }
 
 }

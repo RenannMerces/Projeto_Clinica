@@ -76,7 +76,7 @@
 
       <p class="login-link">
         Já possui conta?
-        <router-link to="/login">Entrar</router-link>
+        <router-link to="/">Entrar</router-link>
       </p>
 
     </form>
@@ -200,6 +200,7 @@ export default {
     border:none;
     border-radius:6px;
     cursor:pointer;
+    transition: 0.5s;
   }
 
   button:hover{
