@@ -12,6 +12,7 @@
 
         <thead>
           <tr>
+            <th>ID</th>
             <th>Nome</th>
             <th>Email</th>
             <th>CPF</th>
@@ -27,6 +28,7 @@
         <tbody>
 
           <tr v-for="(paciente, index) in pacientes" :key="index">
+            <td data-label="ID">{{ paciente.id }}</td>
             <td data-label="Nome" class="text-limit">{{ paciente.nome }}</td>
             <td data-label="Email" class="text-limit">{{ paciente.email }}</td>
             <td data-label="CPF">{{ paciente.cpf }}</td>
@@ -64,6 +66,7 @@ export default {
 
       pacientes:[
         {
+          id:1,
           nome:"Maria Souza",
           email:"maria@email.com",
           cpf:"123.456.789-00",
@@ -74,6 +77,7 @@ export default {
           estado:"BA"
         },
         {
+          id:2,
           nome:"João Pereira",
           email:"joao@email.com",
           cpf:"987.654.321-00",

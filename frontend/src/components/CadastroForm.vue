@@ -18,22 +18,22 @@
 
       <div class="input-group">
         <label>Nome</label>
-        <input type="text" v-model="nome" required />
+        <input type="text" v-model="nome" maxlength="80" @input="nome = nome.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" required />
       </div>
 
       <div class="input-group">
         <label>Email</label>
-        <input type="email" v-model="email" required />
+        <input type="email" v-model="email" maxlength="150" required />
       </div>
 
       <div class="input-group">
         <label>Senha</label>
-        <input type="password" v-model="senha" required />
+        <input type="password" v-model="senha" minlength="6" maxlength="20" required />
       </div>
 
       <div class="input-group">
         <label>Confirmar Senha</label>
-        <input type="password" v-model="confirmarSenha" required />
+        <input type="password" v-model="confirmarSenha" minlength="6" maxlength="20" required />
       </div>
 
       <!-- CAMPOS PACIENTE -->
@@ -42,12 +42,12 @@
 
         <div class="input-group">
           <label>CPF</label>
-          <input type="text" v-model="cpf" />
+          <input type="text" v-model="cpf" maxlength="11" @input="cpf = cpf.replace(/[^0-9]/g, '')" />
         </div>
 
         <div class="input-group">
           <label>CEP</label>
-          <input type="text" v-model="cep" @blur="buscarCep"/>
+          <input type="text" v-model="cep" maxlength="8" @input="cep = cep.replace(/[^0-9]/g, '')" @blur="buscarCep"/>
         </div>
 
         <div class="input-group">
@@ -67,7 +67,7 @@
 
         <div class="input-group">
           <label>Estado</label>
-          <input type="text" v-model="estado" />
+          <input type="text" maxlength="2" @input="estado = estado.replace(/[^a-zA-Z]/g, '').toUpperCase()" v-model="estado" />
         </div>
 
       </div>
@@ -114,40 +114,77 @@ export default {
 
     async buscarCep(){
 
-      if(this.cep.length < 8) return
+      if(this.cep.length !== 8){
+        alert("CEP inválido")
+        return
+      }
 
-      const response = await axios.get(`https://viacep.com.br/ws/${this.cep}/json/`)
+      try{
 
-      this.rua = response.data.logradouro
-      this.bairro = response.data.bairro
-      this.cidade = response.data.localidade
-      this.estado = response.data.uf
+        const response = await axios.get(`https://viacep.com.br/ws/${this.cep}/json/`)
 
-    },
+        this.rua = response.data.logradouro
+        this.bairro = response.data.bairro
+        this.cidade = response.data.localidade
+        this.estado = response.data.uf
 
-    cadastrar(){
+      }catch(error){
 
-      const usuario = {
-
-        nome:this.nome,
-        email:this.email,
-        senha:this.senha,
-        tipo:this.tipoUsuario,
-        cpf:this.cpf,
-
-        endereco:{
-          cep:this.cep,
-          rua:this.rua,
-          bairro:this.bairro,
-          cidade:this.cidade,
-          estado:this.estado
-        }
+        console.log("Erro ao buscar CEP")
 
       }
 
-      console.log(usuario)
+    },
 
-    }
+      cadastrar(){
+
+        if(this.senha !== this.confirmarSenha){
+          alert("As senhas não coincidem")
+          return
+        }
+
+        if(this.senha.length < 6){
+          alert("A senha deve ter pelo menos 6 caracteres")
+          return
+        }
+
+        const usuario = {
+          nome:this.nome,
+          email:this.email,
+          senha:this.senha,
+          tipo:this.tipoUsuario,
+          cpf:this.cpf,
+
+          endereco:{
+            cep:this.cep,
+            rua:this.rua,
+            bairro:this.bairro,
+            cidade:this.cidade,
+            estado:this.estado
+          }
+        }
+
+        console.log(usuario)
+
+          // LIMPAR FORMULÁRIO
+        this.limparFormulario()
+      },
+      limparFormulario(){
+
+        this.nome = ""
+        this.email = ""
+        this.senha = ""
+        this.confirmarSenha = ""
+        this.tipoUsuario = "paciente"
+
+        this.cpf = ""
+        this.cep = ""
+        this.rua = ""
+        this.bairro = ""
+        this.cidade = ""
+        this.estado = ""
+
+}
 
   }
 

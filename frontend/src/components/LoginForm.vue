@@ -12,6 +12,8 @@
           type="email"
           v-model="email"
           placeholder="Digite seu email"
+          maxlength="100"
+          @input="email = email.trim()"
           required
         />
       </div>
@@ -21,12 +23,15 @@
         <input 
           type="password"
           v-model="senha"
+          minlength="6"
+          maxlength="20"
+          @input="senha = senha.replace(/\s/g,'')"
           placeholder="Digite sua senha"
           required
         />
       </div>
 
-      <button type="submit">Entrar</button>
+      <button type="submit" :disabled="!email || !senha">Entrar</button>
 
       <p class="cadastro">
         Não tem conta?
@@ -51,14 +56,35 @@ export default {
 
   methods: {
     login(){
+
+      if(!this.email.includes("@")){
+        alert("Digite um email válido")
+        return
+      }
+
+      if(this.senha.length < 6){
+        alert("A senha deve ter pelo menos 6 caracteres")
+        return
+      }
+
       console.log("Email:", this.email)
       console.log("Senha:", this.senha)
+
+        this.email = ""
+        this.senha = ""
+
+
     }
   }
 }
 </script>
 
 <style scoped>
+
+button:disabled{
+  background:#aaa;
+  cursor:not-allowed;
+}
 
 .login-container{
   width:100%;

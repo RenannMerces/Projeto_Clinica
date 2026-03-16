@@ -1,17 +1,20 @@
 <template>
     <div>
         <NavBar />
-        tela de agendamentos
+        <TabelaAdm />
     </div>
 </template>
 
 <script>
 
 import NavBar from '../components/NavBar.vue'
+import TabelaAdm from '../components/TabelaAdm.vue'
+
     export default {
         name: "AdmAgendamentos",
         components:{
-            NavBar
+            NavBar,
+            TabelaAdm
         }
     }
 </script>

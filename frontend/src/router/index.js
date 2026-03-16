@@ -3,7 +3,7 @@ import LoginView from '../views/LoginView.vue'
 import CadastroView from '../views/CadastroView.vue'
 import AgendamentoView from '../views/AgendamentoView.vue'
 import PacienteView from '../views/PacienteView.vue'
-import AdmAgendamentos from '../views/AdmAgendamentos.vue'
+import AdmAgendamentos from '../views/AdmAgendamentosView.vue'
 
 const routes = [
   {
