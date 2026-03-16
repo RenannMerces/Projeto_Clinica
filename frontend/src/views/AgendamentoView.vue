@@ -2,7 +2,7 @@
     <div>
         <NavBar />
         <BannerAgendamento />
-        <BoasVindas />
+        <BoasVindas :usuario="usuarioLogado"/>
         <TabelaAgendamentos />
     </div>
     
@@ -12,7 +12,7 @@
 
     import NavBar from "../components/NavBar.vue"
     import BannerAgendamento from "../components/Agendamentos/BannerAgendamento.vue"
-    import BoasVindas from "../components/Agendamentos/TituloAgendamento.vue"
+    import BoasVindas from "../components/Agendamentos/BoasVindasAgendamento.vue"
     import TabelaAgendamentos from "../components/Agendamentos/TabelaAgendamentos.vue"
 
     export default {
@@ -22,6 +22,12 @@
             BannerAgendamento,
             BoasVindas,
             TabelaAgendamentos
+        },data(){
+        return {
+            usuarioLogado: {
+            nome: "Renan Mercês",
+            }
+        }
         }
     }
 </script>

@@ -48,11 +48,11 @@
   background-image: url('/public/img/teste.jpg');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   min-height: 300px;
   width:100%;
   display:flex;
   align-items:center;
+  justify-content:center; /* centraliza o container */
 }
 
 .logo-clinica{
@@ -75,10 +75,11 @@
     rgba(0,0,0,0.55) 40%,
     rgba(0,0,0,0.2) 100%
   );
-
   display:flex;
   align-items:center;
+  justify-content:center; /* centraliza o container */
 }
+
 
 .banner-content{
   display:flex;
@@ -99,9 +100,11 @@
 
 .banner-container{
   max-width:1200px;
-  margin:auto;
+  width:100%;          /* ocupa 100% do max-width */
   padding:40px;
+  box-sizing:border-box;
 }
+
 
 .especialidades{
   display:grid;

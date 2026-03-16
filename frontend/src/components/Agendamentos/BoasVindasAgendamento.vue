@@ -5,7 +5,7 @@
   <div class="container">
 
     <h2 class="titulo">
-      Seja bem-vindo!
+      Seja bem-vindo, <span class="destaque">{{ usuario.nome }}</span>!
     </h2>
 
     <button class="btn-agendar" @click="abrirForm = true">
@@ -22,21 +22,30 @@
 </template>
 
 <script>
-
 import FormAgendamento from "./FormAgendamento.vue"
+
 export default {
   name: "BoasVindas",
   components:{
     FormAgendamento
   },
+
+  props:{
+    usuario:{
+      type: Object,
+      required: true
+    }
+  },
+
   data(){
     return{
       abrirForm:false
     }
   }
-}
 
+}
 </script>
+
 
 <style scoped>
 
@@ -62,8 +71,13 @@ export default {
 
 .titulo{
   font-size:28px;
-  font-weight:600;
+  font-weight:400;
   color:#222;
+}
+
+.destaque{
+  color: rgb(7, 63, 75);
+  font-weight: 700;
 }
 
 /* botão */

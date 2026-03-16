@@ -17,11 +17,6 @@
           </router-link>
         </li>
         <li>
-          <router-link to="/perfil">
-            Perfil
-          </router-link>
-        </li>
-        <li>
           <router-link to="/login">
             Sair
           </router-link>
