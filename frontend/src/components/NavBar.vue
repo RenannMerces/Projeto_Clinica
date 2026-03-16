@@ -12,8 +12,18 @@
     <!-- MENU -->
       <ul :class="['menu', { active: menuOpen }]">
         <li>
+          <router-link to="/adm">
+            Agendamentos
+          </router-link>
+        </li>
+        <li>
           <router-link to="/agendamento">
             Agendamento
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/pacientes">
+            Pacientes
           </router-link>
         </li>
         <li>
