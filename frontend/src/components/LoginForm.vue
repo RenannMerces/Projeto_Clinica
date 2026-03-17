@@ -57,6 +57,7 @@ import axios from "axios"
     },
 
  methods: {
+  
   async login(){
 
     if(!this.email.includes("@")){
@@ -71,17 +72,19 @@ import axios from "axios"
 
     try{
 
-      const response = await axios.post("http://localhost:3000/auth/login",{
+      const response = await axios.post("http://localhost:3000/auth/login", {
         email: this.email,
         senha: this.senha
       })
 
+      // Salvar token no localStorage
+      localStorage.setItem("token", response.data.token)
+      localStorage.setItem("usuario", JSON.stringify(response.data.usuario))
+
       alert("Login realizado com sucesso!")
 
-      console.log(response.data)
-
-      this.email = ""
-      this.senha = ""
+      // Redirecionar para página principal (exemplo)
+      this.$router.replace("/agendamento")
 
     }catch(error){
 
@@ -90,9 +93,9 @@ import axios from "axios"
       console.error(error)
 
     }
-
   }
 }
+
 }
 </script>
 

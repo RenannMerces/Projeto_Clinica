@@ -1,62 +1,85 @@
 <template>
   <nav class="navbar">
 
-    <!-- LOGO -->
     <div class="logo">
       <img src="/img/logo_icon.png" alt="Logo Sistema">
     </div>
 
-    <!-- BOTÃO MOBILE -->
     <div class="hamburger" @click="toggleMenu"> ☰ </div>
 
-    <!-- MENU -->
-      <ul :class="['menu', { active: menuOpen }]">
-        <li>
-          <router-link to="/adm">
-            Agendamentos
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/agendamento">
-            Agendamento
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/pacientes">
-            Pacientes
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/login">
-            Sair
-          </router-link>
-        </li>
-      </ul>
+    <ul :class="['menu', { active: menuOpen }]">
+
+      <!-- Rotas apenas para secretários -->
+      <li v-if="isSecretario">
+        <router-link to="/adm">Agendamentos</router-link>
+      </li>
+
+      <li v-if="isPaciente || isSecretario">
+        <router-link to="/agendamento">Agendamento</router-link>
+      </li>
+
+      <li v-if="isSecretario">
+        <router-link to="/pacientes">Pacientes</router-link>
+      </li>
+
+<li>
+  <router-link to="/" @click="logout" class="logout-link">Sair</router-link>
+</li>
+    </ul>
 
   </nav>
 </template>
 
 <script>
-
-  export default {
-    name: "NavBar",
-
-    data(){
-      return{
-        menuOpen:false
-      }
+export default {
+  name: "NavBar",
+  data() {
+    return {
+      menuOpen: false,
+      usuario: null
+    }
+  },
+  computed: {
+    isPaciente() {
+      return this.usuario?.tipo === "paciente"
     },
-
-    methods:{
-      toggleMenu(){
-        this.menuOpen = !this.menuOpen
-      }
+    isSecretario() {
+      return this.usuario?.tipo === "secretario"
+    }
+  },
+  created() {
+    // Pegar usuário logado do localStorage
+    const usuarioStorage = localStorage.getItem("usuario")
+    if (usuarioStorage) this.usuario = JSON.parse(usuarioStorage)
+  },
+  methods: {
+    toggleMenu() {
+      this.menuOpen = !this.menuOpen
+    },
+    logout() {
+        localStorage.removeItem("token")
+        localStorage.removeItem("usuario")
+        this.usuario = null
+        // Substitui a rota para limpar histórico
+        this.$router.replace({ name: "login" })
     }
   }
-
+}
 </script>
 
 <style scoped>
+
+.logout-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.logout-link:hover {
+  color: #ffcccc;
+}
 
 .navbar{
   width:100%;
