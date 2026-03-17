@@ -2,7 +2,6 @@
   <div>
     <NavBar />
     <TabelaPacientes />
-    ola
   </div>
 </template>
 

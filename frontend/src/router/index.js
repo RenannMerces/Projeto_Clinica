@@ -26,19 +26,19 @@ const routes = [
     path: '/agendamento',
     name: 'agendamento',
     component: AgendamentoView,
-    meta: { roles: ['paciente', 'secretario'] } // ambos podem acessar
+    meta: { roles: ['paciente'] }
   },
   {
     path: '/adm',
     name: 'adm',
     component: AdmAgendamentos,
-    meta: { roles: ['secretario'] } // somente secretários
+    meta: { roles: ['secretario'] }
   },
   {
     path: '/pacientes',
     name: 'pacientes',
     component: PacienteView,
-    meta: { roles: ['secretario'] } // somente secretários
+    meta: { roles: ['secretario'] }
   }
 ]
 
@@ -47,20 +47,33 @@ const router = createRouter({
   routes
 })
 
-// Guard global para proteger rotas
+// 🔐 Guard global
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   const usuario = JSON.parse(localStorage.getItem('usuario') || 'null')
 
-  // Se não tiver token, redireciona para login (exceto páginas públicas)
-  if (!token && !['login', 'cadastro-paciente', 'cadastro-secretario'].includes(to.name)) {
+  // Rotas públicas
+  const publicPages = ['login', 'cadastro-paciente', 'cadastro-secretario']
+
+  // 🚫 Sem token → volta pro login
+  if (!token && !publicPages.includes(to.name)) {
     return next({ name: 'login' })
   }
 
-  // Se a rota tem restrição de roles
+  // 🔥 Se já está logado e tenta ir pro login → redireciona automaticamente
+  if (token && to.name === 'login' && usuario) {
+    const rotasPorTipo = {
+      secretario: '/adm',
+      paciente: '/agendamento'
+    }
+
+    return next(rotasPorTipo[usuario.tipo] || '/')
+  }
+
+  // 🔐 Controle de permissões por tipo
   if (to.meta.roles && usuario) {
     if (!to.meta.roles.includes(usuario.tipo)) {
-      return next({ name: 'login' }) // redireciona se tipo não permitido
+      return next({ name: 'login' })
     }
   }
 

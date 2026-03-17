@@ -14,7 +14,7 @@
         <router-link to="/adm">Agendamentos</router-link>
       </li>
 
-      <li v-if="isPaciente || isSecretario">
+      <li v-if="isPaciente">
         <router-link to="/agendamento">Agendamento</router-link>
       </li>
 

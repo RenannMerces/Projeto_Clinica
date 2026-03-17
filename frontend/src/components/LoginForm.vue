@@ -77,14 +77,20 @@ import axios from "axios"
         senha: this.senha
       })
 
+      const usuario = response.data.usuario
+
       // Salvar token no localStorage
       localStorage.setItem("token", response.data.token)
       localStorage.setItem("usuario", JSON.stringify(response.data.usuario))
 
       alert("Login realizado com sucesso!")
 
-      // Redirecionar para página principal (exemplo)
-      this.$router.replace("/agendamento")
+// 🔥 redirecionamento 
+      const rotasPorTipo = {
+        secretario: "/adm",
+        paciente: "/agendamento"
+      }
+      this.$router.replace(rotasPorTipo[usuario.tipo] || "/")
 
     }catch(error){
 

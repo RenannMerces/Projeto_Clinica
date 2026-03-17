@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+import * as jwt from "jsonwebtoken"
 import { Request, Response } from "express"
 import Usuario from "../models/Usuario"
 
@@ -63,7 +63,7 @@ export const loginUsuario = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { id: usuario._id, tipo: usuario.tipo },
       process.env.JWT_SECRET || "segredo",
-      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+      { expiresIn: process.env.JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"] || "1d" }
     )
 
     // 4️⃣ Retornar dados do usuário + token
