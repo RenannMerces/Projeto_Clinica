@@ -5,6 +5,7 @@ import CadastroSecretario from '../views/CadastroSecretarioView.vue'
 import AgendamentoView from '../views/AgendamentoView.vue'
 import PacienteView from '../views/PacienteView.vue'
 import AdmAgendamentos from '../views/AdmAgendamentosView.vue'
+import CadastroMedicos from '../views/CadastroMedicosView.vue'
 
 const routes = [
   {
@@ -32,6 +33,12 @@ const routes = [
     path: '/adm',
     name: 'adm',
     component: AdmAgendamentos,
+    meta: { roles: ['secretario'] }
+  },
+  {
+    path: '/cadastro-medicos',
+    name: 'cadastro-medicos',
+    component: CadastroMedicos,
     meta: { roles: ['secretario'] }
   },
   {

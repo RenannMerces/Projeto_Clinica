@@ -19,6 +19,10 @@
       </li>
 
       <li v-if="isSecretario">
+        <router-link to="/cadastro-medicos">Médicos</router-link>
+      </li>
+
+      <li v-if="isSecretario">
         <router-link to="/pacientes">Pacientes</router-link>
       </li>
 
