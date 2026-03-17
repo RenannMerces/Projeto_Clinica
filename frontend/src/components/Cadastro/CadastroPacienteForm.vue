@@ -1,24 +1,15 @@
 <template>
   <div class="register-container">
-
-    <h1>CADASTRO</h1>
+    <EscolhaCadastro />
+    <h1>PACIENTE</h1>
     <h3>Faça seu cadastro agora mesmo!</h3>
 
     <form @submit.prevent="cadastrar">
 
-      <!-- PRIMEIRO CAMPO -->
-
-      <div class="input-group">
-        <label>Tipo de Usuário</label>
-        <select v-model="tipoUsuario">
-          <option value="paciente">Paciente</option>
-          <option value="secretario">Secretário</option>
-        </select>
-      </div>
-
       <div class="input-group">
         <label>Nome</label>
-        <input type="text" v-model="nome" maxlength="80" @input="nome = nome.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" required />
+        <input type="text" v-model="nome" maxlength="80"
+          @input="nome = nome.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" required />
       </div>
 
       <div class="input-group">
@@ -38,38 +29,38 @@
 
       <!-- CAMPOS PACIENTE -->
 
-      <div v-if="tipoUsuario === 'paciente'">
+      <div class="input-group">
+        <label>CPF</label>
+        <input type="text" v-model="cpf" @input="cpf = cpf.replace(/[^0-9]/g, '')" />
+      </div>
 
-        <div class="input-group">
-          <label>CPF</label>
-          <input type="text" v-model="cpf" maxlength="11" @input="cpf = cpf.replace(/[^0-9]/g, '')" />
-        </div>
+      <div class="input-group">
+        <label>CEP</label>
+        <input type="text" v-model="cep"
+          @input="cep = cep.replace(/[^0-9]/g, '')"
+          @blur="buscarCep" />
+      </div>
 
-        <div class="input-group">
-          <label>CEP</label>
-          <input type="text" v-model="cep" maxlength="8" @input="cep = cep.replace(/[^0-9]/g, '')" @blur="buscarCep"/>
-        </div>
+      <div class="input-group">
+        <label>Rua</label>
+        <input type="text" v-model="rua" />
+      </div>
 
-        <div class="input-group">
-          <label>Rua</label>
-          <input type="text" v-model="rua" />
-        </div>
+      <div class="input-group">
+        <label>Bairro</label>
+        <input type="text" v-model="bairro" />
+      </div>
 
-        <div class="input-group">
-          <label>Bairro</label>
-          <input type="text" v-model="bairro" />
-        </div>
+      <div class="input-group">
+        <label>Cidade</label>
+        <input type="text" v-model="cidade" />
+      </div>
 
-        <div class="input-group">
-          <label>Cidade</label>
-          <input type="text" v-model="cidade" />
-        </div>
-
-        <div class="input-group">
-          <label>Estado</label>
-          <input type="text" maxlength="2" @input="estado = estado.replace(/[^a-zA-Z]/g, '').toUpperCase()" v-model="estado" />
-        </div>
-
+      <div class="input-group">
+        <label>Estado</label>
+        <input type="text"
+          v-model="estado"
+          @input="estado = estado.replace(/[^a-zA-Z]/g, '').toUpperCase()" />
       </div>
 
       <button type="submit">Cadastrar</button>
@@ -86,19 +77,21 @@
 
 <script>
 import axios from "axios"
+import EscolhaCadastro from "../Cadastro/EscolhaCadastro.vue"
 
 export default {
 
-  name: "CadastroForm",
+  name: "CadastroPacienteForm",
+  components: {
+    EscolhaCadastro
+  },
 
   data(){
     return{
-
       nome:"",
       email:"",
       senha:"",
       confirmarSenha:"",
-      tipoUsuario:"paciente",
 
       cpf:"",
       cep:"",
@@ -106,7 +99,6 @@ export default {
       bairro:"",
       cidade:"",
       estado:""
-
     }
   },
 
@@ -120,7 +112,6 @@ export default {
       }
 
       try{
-
         const response = await axios.get(`https://viacep.com.br/ws/${this.cep}/json/`)
 
         this.rua = response.data.logradouro
@@ -129,62 +120,79 @@ export default {
         this.estado = response.data.uf
 
       }catch(error){
-
         console.log("Erro ao buscar CEP")
+      }
+
+    },
+
+    async cadastrar(){
+
+      if(this.senha !== this.confirmarSenha){
+        alert("As senhas não coincidem")
+        return
+      }
+
+      if(this.senha.length < 6){
+        alert("A senha deve ter pelo menos 6 caracteres")
+        return
+      }
+
+      try{
+
+        const usuario = {
+          nome: this.nome,
+          email: this.email,
+          senha: this.senha,
+          tipo: "paciente", // ✅ FIXO
+
+          cpf: this.cpf,
+
+          endereco:{
+            cep: this.cep,
+            rua: this.rua,
+            bairro: this.bairro,
+            cidade: this.cidade,
+            estado: this.estado
+          }
+        }
+
+        const response = await axios.post(
+          "http://localhost:3000/auth/register",
+          usuario
+        )
+
+        console.log(response.data)
+
+        alert("Paciente cadastrado com sucesso!")
+
+        this.limparFormulario()
+
+      }catch(error){
+
+        console.error(error)
+
+        if(error.response){
+          alert(error.response.data.msg)
+        }else{
+          alert("Erro ao conectar com o servidor")
+        }
 
       }
 
     },
 
-      cadastrar(){
-
-        if(this.senha !== this.confirmarSenha){
-          alert("As senhas não coincidem")
-          return
-        }
-
-        if(this.senha.length < 6){
-          alert("A senha deve ter pelo menos 6 caracteres")
-          return
-        }
-
-        const usuario = {
-          nome:this.nome,
-          email:this.email,
-          senha:this.senha,
-          tipo:this.tipoUsuario,
-          cpf:this.cpf,
-
-          endereco:{
-            cep:this.cep,
-            rua:this.rua,
-            bairro:this.bairro,
-            cidade:this.cidade,
-            estado:this.estado
-          }
-        }
-
-        console.log(usuario)
-
-          // LIMPAR FORMULÁRIO
-        this.limparFormulario()
-      },
-      limparFormulario(){
-
-        this.nome = ""
-        this.email = ""
-        this.senha = ""
-        this.confirmarSenha = ""
-        this.tipoUsuario = "paciente"
-
-        this.cpf = ""
-        this.cep = ""
-        this.rua = ""
-        this.bairro = ""
-        this.cidade = ""
-        this.estado = ""
-
-}
+    limparFormulario(){
+      this.nome = ""
+      this.email = ""
+      this.senha = ""
+      this.confirmarSenha = ""
+      this.cpf = ""
+      this.cep = ""
+      this.rua = ""
+      this.bairro = ""
+      this.cidade = ""
+      this.estado = ""
+    }
 
   }
 

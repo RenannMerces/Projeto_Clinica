@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
-import CadastroView from '../views/CadastroView.vue'
+import CadastroPacienteView from '../views/CadastroPacienteView.vue'
+import CadastroSecretario from '../views/CadastroSecretarioView.vue'
 import AgendamentoView from '../views/AgendamentoView.vue'
 import PacienteView from '../views/PacienteView.vue'
 import AdmAgendamentos from '../views/AdmAgendamentosView.vue'
@@ -12,9 +13,14 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/cadastro',
-    name: 'cadastro',
-    component: CadastroView
+    path: '/cadastro-paciente',
+    name: 'cadastro-paciente',
+    component: CadastroPacienteView
+  },
+  {
+    path: '/cadastro-secretario',
+    name: 'cadastro-secretario',
+    component: CadastroSecretario
   },
   {
     path: '/agendamento',

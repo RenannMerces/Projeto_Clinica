@@ -35,7 +35,7 @@
 
       <p class="cadastro">
         Não tem conta?
-        <router-link to="/cadastro">Cadastrar</router-link>
+        <router-link to="/cadastro-paciente">Cadastrar</router-link>
       </p>
 
     </form>
@@ -44,38 +44,55 @@
 </template>
 
 <script>
-export default {
-  name: "LoginForm",
 
-  data() {
-    return {
-      email: "",
-      senha: ""
-    }
-  },
+import axios from "axios"
+  export default {
+    name: "LoginForm",
 
-  methods: {
-    login(){
-
-      if(!this.email.includes("@")){
-        alert("Digite um email válido")
-        return
+    data() {
+      return {
+        email: "",
+        senha: ""
       }
+    },
 
-      if(this.senha.length < 6){
-        alert("A senha deve ter pelo menos 6 caracteres")
-        return
-      }
+ methods: {
+  async login(){
 
-      console.log("Email:", this.email)
-      console.log("Senha:", this.senha)
+    if(!this.email.includes("@")){
+      alert("Digite um email válido")
+      return
+    }
 
-        this.email = ""
-        this.senha = ""
+    if(this.senha.length < 6){
+      alert("A senha deve ter pelo menos 6 caracteres")
+      return
+    }
 
+    try{
+
+      const response = await axios.post("http://localhost:3000/auth/login",{
+        email: this.email,
+        senha: this.senha
+      })
+
+      alert("Login realizado com sucesso!")
+
+      console.log(response.data)
+
+      this.email = ""
+      this.senha = ""
+
+    }catch(error){
+
+      alert("Email ou senha inválidos")
+
+      console.error(error)
 
     }
+
   }
+}
 }
 </script>
 

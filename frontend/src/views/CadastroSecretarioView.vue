@@ -1,28 +1,23 @@
 <template>
   <div class="register-page">
 
-    <!-- LADO ESQUERDO -->
     <div class="left-side">
-      <img src="/img/logo.png" alt="Logomarcar Clínica Mercês" class="logo">
+      <img src="/img/logo.png" class="logo">
     </div>
 
-    <!-- LADO DIREITO -->
     <div class="right-side">
-      <CadastroForm />
+      <CadastroSecretarioForm />
     </div>
 
   </div>
 </template>
 
 <script>
-import CadastroForm from "../components/CadastroForm.vue"
+    import CadastroSecretarioForm from "../components/Cadastro/CadastroSecretarioForm.vue"
 
-export default {
-  name: "CadastroView",
-  components: {
-    CadastroForm
-  }
-}
+    export default {
+    components: { CadastroSecretarioForm }
+    }
 </script>
 
 <style scoped>
