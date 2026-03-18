@@ -44,8 +44,9 @@
 </template>
 
 <script>
-
 import axios from "axios"
+import Swal from "sweetalert2"
+
   export default {
     name: "LoginForm",
 
@@ -61,14 +62,31 @@ import axios from "axios"
   async login(){
 
     if(!this.email.includes("@")){
-      alert("Digite um email válido")
+      Swal.fire({
+        icon: "warning",
+        title: "Email inválido",
+        text: "Digite um email válido"
+      })
       return
     }
 
     if(this.senha.length < 6){
-      alert("A senha deve ter pelo menos 6 caracteres")
+      Swal.fire({
+        icon: "warning",
+        title: "Senha inválida",
+        text: "A senha deve ter pelo menos 6 caracteres"
+      })
       return
     }
+
+      Swal.fire({
+        title: "Entrando...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      })
+
 
     try{
 
@@ -83,7 +101,13 @@ import axios from "axios"
       localStorage.setItem("token", response.data.token)
       localStorage.setItem("usuario", JSON.stringify(response.data.usuario))
 
-      alert("Login realizado com sucesso!")
+      await Swal.fire({
+          icon: "success",
+          title: "Login realizado!",
+          text: "Bem-vindo ao sistema",
+          timer: 1500,
+          showConfirmButton: false
+        })
 
 // 🔥 redirecionamento 
       const rotasPorTipo = {
@@ -93,9 +117,13 @@ import axios from "axios"
       this.$router.replace(rotasPorTipo[usuario.tipo] || "/")
 
     }catch(error){
+      Swal.close()
 
-      alert("Email ou senha inválidos")
-
+      Swal.fire({
+        icon: "error",
+        title: "Erro no login",
+        text: "Email ou senha inválidos"
+      })
       console.error(error)
 
     }

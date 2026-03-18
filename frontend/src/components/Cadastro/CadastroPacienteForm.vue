@@ -8,13 +8,13 @@
 
       <div class="input-group">
         <label>Nome</label>
-        <input type="text" v-model="nome" maxlength="80"
+        <input type="text" v-model="nome" maxlength="40"
           @input="nome = nome.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" required />
       </div>
 
       <div class="input-group">
         <label>Email</label>
-        <input type="email" v-model="email" maxlength="150" required />
+        <input type="email" v-model="email" maxlength="40" required />
       </div>
 
       <div class="input-group">
@@ -31,13 +31,12 @@
 
       <div class="input-group">
         <label>CPF</label>
-        <input type="text" v-model="cpf" @input="cpf = cpf.replace(/[^0-9]/g, '')" />
+        <input type="text" v-model="cpf" maxlength="11" @input="cpf = cpf.replace(/[^0-9]/g, '')" />
       </div>
 
       <div class="input-group">
         <label>CEP</label>
-        <input type="text" v-model="cep"
-          @input="cep = cep.replace(/[^0-9]/g, '')"
+        <input type="text" v-model="cep" maxlength="9"
           @blur="buscarCep" />
       </div>
 
@@ -76,6 +75,7 @@
 </template>
 
 <script>
+import Swal from "sweetalert2"
 import axios from "axios"
 import EscolhaCadastro from "../Cadastro/EscolhaCadastro.vue"
 
@@ -107,12 +107,35 @@ export default {
     async buscarCep(){
 
       if(this.cep.length !== 8){
-        alert("CEP inválido")
+          Swal.fire({
+          icon: "warning",
+          title: "CEP inválido",
+          text: "Digite um CEP válido com 8 números"
+        })
         return
       }
 
+        Swal.fire({
+        title: "Buscando CEP...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      })
+
       try{
         const response = await axios.get(`https://viacep.com.br/ws/${this.cep}/json/`)
+
+        Swal.close()
+
+        if(response.data.erro){
+          Swal.fire({
+            icon: "error",
+            title: "CEP não encontrado",
+            text: "Verifique o CEP informado"
+          })
+          return
+        }
 
         this.rua = response.data.logradouro
         this.bairro = response.data.bairro
@@ -120,6 +143,14 @@ export default {
         this.estado = response.data.uf
 
       }catch(error){
+        Swal.close()
+
+        Swal.fire({
+          icon: "error",
+          title: "Erro",
+          text: "Não foi possível buscar o CEP"
+        })
+
         console.log("Erro ao buscar CEP")
       }
 
@@ -128,14 +159,42 @@ export default {
     async cadastrar(){
 
       if(this.senha !== this.confirmarSenha){
-        alert("As senhas não coincidem")
+        Swal.fire({
+          icon: "warning",
+          title: "Senhas não coincidem",
+          text: "Verifique as senhas digitadas"
+        })
         return
       }
 
       if(this.senha.length < 6){
-        alert("A senha deve ter pelo menos 6 caracteres")
+        Swal.fire({
+          icon: "warning",
+          title: "Senha inválida",
+          text: "A senha deve ter pelo menos 6 caracteres"
+        })
         return
       }
+
+        const confirmacao = await Swal.fire({
+          title: "Confirmar cadastro?",
+          text: "Deseja cadastrar este paciente?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Sim, cadastrar",
+          cancelButtonText: "Cancelar"
+        })
+
+        if(!confirmacao.isConfirmed) return
+
+        // 🔄 Loading
+        Swal.fire({
+          title: "Cadastrando paciente...",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading()
+          }
+        })
 
       try{
 
@@ -163,18 +222,36 @@ export default {
 
         console.log(response.data)
 
-        alert("Paciente cadastrado com sucesso!")
+        Swal.close()
+
+          await Swal.fire({
+            icon: "success",
+            title: "Cadastro realizado!",
+            text: "Paciente cadastrado com sucesso",
+            timer: 1500,
+            showConfirmButton: false
+          })
 
         this.limparFormulario()
 
       }catch(error){
 
+        Swal.close()
+
         console.error(error)
 
         if(error.response){
-          alert(error.response.data.msg)
+          Swal.fire({
+          icon: "error",
+          title: "Erro",
+          text: error.response.data.msg || "Erro ao cadastrar"
+        })
         }else{
-          alert("Erro ao conectar com o servidor")
+          Swal.fire({
+          icon: "error",
+          title: "Erro de conexão",
+          text: "Não foi possível conectar ao servidor"
+        })
         }
 
       }

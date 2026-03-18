@@ -28,7 +28,7 @@
         <tbody>
 
           <tr v-for="(paciente, index) in pacientes" :key="index">
-            <td data-label="ID">{{ paciente.id }}</td>
+            <td data-label="ID">{{ index + 1 }}</td>
             <td data-label="Nome" class="text-limit">{{ paciente.nome }}</td>
             <td data-label="Email" class="text-limit">{{ paciente.email }}</td>
             <td data-label="CPF">{{ paciente.cpf }}</td>
@@ -38,9 +38,9 @@
             <td data-label="Cidade" class="text-limit">{{ paciente.cidade }}</td>
             <td data-label="Estado">{{ paciente.estado }}</td>
              <td data-label="Ação">
-                <button class="btn-excluir" @click="excluirPaciente(index)">
+              <button class="btn-excluir" @click="excluirPaciente(paciente.id)">
                 Excluir
-                </button>
+              </button>
             </td>
           </tr>
 
@@ -57,51 +57,121 @@
 </template>
 
 <script>
+import axios from "axios"
+import Swal from "sweetalert2"
+
 export default {
 
   name: "TabelaPacientes",
 
   data(){
     return{
-
-      pacientes:[
-        {
-          id:1,
-          nome:"Maria Souza",
-          email:"maria@email.com",
-          cpf:"123.456.789-00",
-          cep:"44444-000",
-          rua:"Rua das Flores",
-          bairro:"Centro",
-          cidade:"Salvador",
-          estado:"BA"
-        },
-        {
-          id:2,
-          nome:"João Pereira",
-          email:"joao@email.com",
-          cpf:"987.654.321-00",
-          cep:"44444-111",
-          rua:"Av. Brasil",
-          bairro:"Comércio",
-          cidade:"Salvador",
-          estado:"BA"
-        }
-      ]
-
+      pacientes: [],
+      loading: false,
+      erro: null
     }
   },
-  methods:{
-        excluirPaciente(index){
 
-        const confirmar = confirm("Deseja realmente excluir este paciente?")
+  methods: {
 
-        if(confirmar){
-        this.pacientes.splice(index,1)
+    async buscarPacientes(){
+      this.loading = true
+      this.erro = null
+
+      try {
+
+        const token = localStorage.getItem("token")
+
+        console.log("Token:", token) // 🔍 DEBUG
+
+        if(!token){
+          this.erro = "Usuário não autenticado"
+          this.loading = false // ⚠️ importante
+          return
         }
-    }
-  }
 
+        const response = await axios.get("http://localhost:3000/usuarios/pacientes", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        console.log("Resposta API:", response.data) // 🔍 DEBUG
+
+        // 🔥 GARANTIR QUE É ARRAY
+        if(!Array.isArray(response.data)){
+          this.erro = "Formato de dados inválido"
+          return
+        }
+
+        // 🔥 Mapear dados do backend para tabela
+        this.pacientes = response.data.map(p => ({
+          id: p._id,
+          nome: p.nome,
+          email: p.email,
+          cpf: p.cpf || "-",
+          cep: p.endereco?.cep || "-",
+          rua: p.endereco?.rua || "-",
+          bairro: p.endereco?.bairro || "-",
+          cidade: p.endereco?.cidade || "-",
+          estado: p.endereco?.estado || "-"
+        }))
+
+      } catch (error) {
+
+        console.error("ERRO COMPLETO:", error)
+
+        if(error.response){
+          this.erro = error.response.data?.msg || "Erro ao buscar pacientes"
+        } else {
+          this.erro = "Erro de conexão com o servidor"
+        }
+
+      } finally {
+        this.loading = false
+      }
+    },
+
+      async excluirPaciente(id){
+
+        const result = await Swal.fire({
+          title: "Tem certeza?",
+          text: "Essa ação não pode ser desfeita!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Sim, excluir!",
+          cancelButtonText: "Cancelar"
+        })
+
+        if(!result.isConfirmed) return
+
+        try {
+
+          const token = localStorage.getItem("token")
+
+          await axios.delete(`http://localhost:3000/usuarios/pacientes/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          })
+
+          await this.buscarPacientes()
+
+          Swal.fire("Excluído!", "Paciente removido com sucesso.", "success")
+
+        } catch (error) {
+
+          Swal.fire("Erro!", "Não foi possível excluir.", "error")
+
+        }
+      }
+  },
+
+  mounted(){
+    this.buscarPacientes()
+  }
 }
 </script>
 

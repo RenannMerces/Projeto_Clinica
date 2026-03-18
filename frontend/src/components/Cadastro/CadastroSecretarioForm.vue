@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import Swal from "sweetalert2"
 import axios from "axios"
 import EscolhaCadastro from "../Cadastro/EscolhaCadastro.vue"
 
@@ -64,14 +65,44 @@ export default {
     async cadastrar(){
 
       if(this.senha !== this.confirmarSenha){
-        alert("As senhas não coincidem")
+        Swal.fire({
+          icon: "warning",
+          title: "Senhas não coincidem",
+          text: "Verifique as senhas digitadas"
+        })
         return
       }
 
       if(this.senha.length < 6){
-        alert("A senha deve ter pelo menos 6 caracteres")
+        Swal.fire({
+          icon: "warning",
+          title: "Senha inválida",
+          text: "A senha deve ter pelo menos 6 caracteres"
+        })
         return
       }
+
+        // 🔥 Confirmação (opcional, mas profissional)
+        const confirmacao = await Swal.fire({
+          title: "Confirmar cadastro?",
+          text: "Deseja cadastrar este secretário?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Sim, cadastrar",
+          cancelButtonText: "Cancelar"
+        })
+
+         if(!confirmacao.isConfirmed) return
+
+           // 🔥 Loading
+          Swal.fire({
+            title: "Cadastrando...",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading()
+            }
+          })
+
 
       try{
 
@@ -89,7 +120,13 @@ export default {
 
         console.log(response.data)
 
-        alert("Secretário cadastrado com sucesso!")
+          await Swal.fire({
+            icon: "success",
+            title: "Cadastro realizado!",
+            text: "Secretário cadastrado com sucesso",
+            timer: 1500,
+            showConfirmButton: false
+          })
 
         this.limparFormulario()
 
@@ -98,11 +135,18 @@ export default {
         console.error(error)
 
         if(error.response){
-          alert(error.response.data.msg)
+            Swal.fire({
+            icon: "error",
+            title: "Erro",
+            text: error.response.data.msg || "Erro ao cadastrar"
+          })
         }else{
-          alert("Erro ao conectar com o servidor")
+            Swal.fire({
+            icon: "error",
+            title: "Erro de conexão",
+            text: "Não foi possível conectar ao servidor"
+          })
         }
-
       }
 
     },
