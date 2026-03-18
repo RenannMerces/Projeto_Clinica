@@ -27,7 +27,7 @@
       </li>
 
 <li>
-  <router-link to="/" @click="logout" class="logout-link">Sair</router-link>
+ <a href="#" @click.prevent="logout" class="logout-link">Sair</a>
 </li>
     </ul>
 
@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import Swal from "sweetalert2"
 export default {
   name: "NavBar",
   data() {
@@ -60,12 +61,51 @@ export default {
     toggleMenu() {
       this.menuOpen = !this.menuOpen
     },
-    logout() {
+    async logout(){
+
+      const confirmacao = await Swal.fire({
+        title: "Deseja sair?",
+        text: "Você será desconectado do sistema",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sim, sair",
+        cancelButtonText: "Cancelar"
+      })
+
+      if(!confirmacao.isConfirmed) return
+
+      // 🔄 Loading (opcional, mas bonito)
+      Swal.fire({
+        title: "Saindo...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      })
+
+      // Simula pequeno delay (opcional)
+      setTimeout(async () => {
+
+        // 🔥 Limpa dados
         localStorage.removeItem("token")
         localStorage.removeItem("usuario")
         this.usuario = null
-        // Substitui a rota para limpar histórico
+
+        Swal.close()
+
+        // ✅ Confirmação final
+        await Swal.fire({
+          icon: "success",
+          title: "Logout realizado",
+          text: "Você saiu do sistema",
+          timer: 1500,
+          showConfirmButton: false
+        })
+
+        // 🔄 Redireciona
         this.$router.replace({ name: "login" })
+
+      }, 800)
     }
   }
 }

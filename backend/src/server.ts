@@ -4,6 +4,7 @@ import authRoutes from "./routes/authRoutes"
 import { connectDB } from "./config/database"
 import dotenv from "dotenv"
 import usuarioRoutes from "./routes/usuarioRoutes"
+import medicoRoutes from "./routes/medicoRoutes"
 
 const app = express()
 
@@ -14,6 +15,7 @@ app.use(express.json())
 
 // Rotas
 app.use("/usuarios", usuarioRoutes)
+app.use("/medicos", medicoRoutes)
 app.use("/auth", authRoutes)
 
 // conectar banco

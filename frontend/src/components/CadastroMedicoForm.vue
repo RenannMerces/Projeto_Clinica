@@ -77,6 +77,9 @@
 
 <script>
 
+import axios from "axios"
+import Swal from "sweetalert2"
+
 export default {
   name: "CadastroMedicoForm",
 
@@ -107,34 +110,78 @@ export default {
   },
 
   methods: {
-    cadastrarMedico() {
+    async cadastrarMedico() {
 
-      const medico = {
-        nome: this.nome,
-        especialidade: this.especialidade,
-        duracaoConsulta: Number(this.duracao),
-        dias: this.diasSelecionados,
-        horarios: {
-          manha: {
-            inicio: this.manhaInicio,
-            fim: this.manhaFim
-          },
-          tarde: {
-            inicio: this.tardeInicio,
-            fim: this.tardeFim
+      const confirmacao = await Swal.fire({
+        title: "Cadastrar médico?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sim",
+        cancelButtonText: "Cancelar"
+      })
+
+      if (!confirmacao.isConfirmed) return
+
+      Swal.fire({
+        title: "Cadastrando...",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      })
+
+      try {
+
+        const token = localStorage.getItem("token")
+
+        const medico = {
+          nome: this.nome,
+          especialidade: this.especialidade,
+          duracaoConsulta: Number(this.duracao),
+          dias: this.diasSelecionados,
+          horarios: {
+            manha: {
+              inicio: this.manhaInicio,
+              fim: this.manhaFim
+            },
+            tarde: {
+              inicio: this.tardeInicio,
+              fim: this.tardeFim
+            }
           }
         }
+
+        await axios.post("http://localhost:3000/medicos", medico, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        Swal.close()
+
+        await Swal.fire({
+          icon: "success",
+          title: "Médico cadastrado!",
+          timer: 1500,
+          showConfirmButton: false
+        })
+
+        // reset
+        this.nome = ""
+        this.especialidade = ""
+        this.duracao = 30
+        this.diasSelecionados = []
+
+      } catch (error) {
+
+        Swal.close()
+
+        Swal.fire({
+          icon: "error",
+          title: "Erro",
+          text: "Não foi possível cadastrar o médico"
+        })
+
+        console.error(error)
       }
-
-      console.log("Médico pronto pro sistema:", medico)
-
-      alert("Médico cadastrado com sucesso!")
-
-      // reset
-      this.nome = ""
-      this.especialidade = ""
-      this.duracao = 30
-      this.diasSelecionados = []
     }
   }
 }
