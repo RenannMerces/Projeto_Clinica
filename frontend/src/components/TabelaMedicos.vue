@@ -12,6 +12,7 @@
 
         <thead>
           <tr>
+            <th>ID</th>
             <th>Nome</th>
             <th>Especialidade</th>
             <th>Duração</th>
@@ -23,7 +24,19 @@
 
         <tbody>
 
-          <tr v-for="(medico, index) in medicos" :key="index">
+          <!-- Sem dados -->
+          <tr v-if="medicos.length === 0">
+            <td colspan="7" style="text-align:center; padding:20px;">
+              Nenhum médico cadastrado
+            </td>
+          </tr>
+
+          <!-- Lista -->
+          <tr v-for="(medico, index) in medicos" :key="medico._id">
+
+            <td data-label="ID">
+              {{ index + 1 }}
+            </td>
 
             <td data-label="Nome" class="text-limit" :title="medico.nome">
               {{ medico.nome }}
@@ -38,23 +51,24 @@
             </td>
 
             <td data-label="Horários" class="text-limit">
-
               <div>
-                🌅 {{ medico.horarios.manha.inicio }} - {{ medico.horarios.manha.fim }}
+                {{ medico.horarios?.manha?.inicio }} - {{ medico.horarios?.manha?.fim }}
               </div>
               <div>
-                🌇 {{ medico.horarios.tarde.inicio }} - {{ medico.horarios.tarde.fim }}
+                {{ medico.horarios?.tarde?.inicio }} - {{ medico.horarios?.tarde?.fim }}
               </div>
-
             </td>
 
             <td data-label="Dias" class="text-limit">
-              {{ medico.dias.join(", ") }}
+              {{ medico.dias?.join(", ") }}
             </td>
 
             <td data-label="Ação">
 
-              <button class="btn-cancelar" @click="$emit('remover', index)">
+              <button 
+                class="btn-cancelar" 
+                @click="removerMedico(medico._id)"
+              >
                 Remover
               </button>
 
@@ -75,23 +89,101 @@
 </template>
 
 <script>
-    export default {
-    name: "TabelaMedicos",
+import axios from "axios"
+import Swal from "sweetalert2"
 
-    props: {
-        medicos: {
-        type: Array,
-        required: true,
-        default: () => []
-        }
+export default {
+  name: "TabelaMedicos",
+
+  data() {
+    return {
+      medicos: []
+    }
+  },
+
+  created() {
+    this.buscarMedicos()
+  },
+
+  methods: {
+
+    // 🔹 GET médicos
+    async buscarMedicos() {
+      try {
+
+        const token = localStorage.getItem("token")
+
+        const response = await axios.get("http://localhost:3000/medicos", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        this.medicos = response.data
+
+      } catch (error) {
+        console.error("Erro ao buscar médicos:", error)
+      }
     },
 
-    methods: {
-        removerMedico(index) {
-        this.$emit("remover", index)
-        }
+   async removerMedico(id) {
+
+      const confirm = await Swal.fire({
+        title: "Tem certeza?",
+        text: "Essa ação não pode ser desfeita!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sim, remover",
+        cancelButtonText: "Cancelar"
+      })
+
+      if (!confirm.isConfirmed) return
+
+      try {
+
+        const token = localStorage.getItem("token")
+
+        // 🔥 Loading
+        Swal.fire({
+          title: "Removendo...",
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        })
+
+        await axios.delete(`http://localhost:3000/medicos/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        Swal.close()
+
+        await Swal.fire({
+          icon: "success",
+          title: "Médico removido!",
+          timer: 1500,
+          showConfirmButton: false
+        })
+
+        // 🔄 Atualiza lista SEM recarregar tudo
+        this.medicos = this.medicos.filter(m => m._id !== id)
+
+      } catch (error) {
+
+        Swal.close()
+
+        Swal.fire({
+          icon: "error",
+          title: "Erro ao remover médico",
+          text: error.response?.data?.msg || "Erro no servidor"
+        })
+
+        console.error(error)
+      }
     }
-    }
+
+  }
+}
 </script>
 
 <style scoped>

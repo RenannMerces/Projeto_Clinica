@@ -164,6 +164,8 @@ export default {
           showConfirmButton: false
         })
 
+        this.$emit("medico-cadastrado")
+
         // reset
         this.nome = ""
         this.especialidade = ""
