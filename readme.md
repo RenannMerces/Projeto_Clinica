@@ -1,7 +1,7 @@
-# Sistema de Clínica Médica
+# Sistema de Clínica Médica - Mercês
 
 ## Descrição
-Este projeto consiste em um sistema completo para gerenciamento de uma clínica médica, voltado para **agendamento de consultas, cadastro de usuários e gerenciamento administrativo**.
+Este projeto consiste em um sistema completo para gerenciamento de uma clínica médica, voltado para **agendamento de consultas, cadastro de usuários e médicos, e gerenciamento administrativo**.
 
 ---
 
@@ -11,7 +11,7 @@ Este projeto consiste em um sistema completo para gerenciamento de uma clínica 
 - Agendamento de consultas com verificação de disponibilidade
 - Consulta automática de endereço pelo CEP
 - Integração com API de clima (alerta de chuva no dia da consulta)
-- Painel administrativo para gerenciamento de atendimentos
+- Painel administrativo para gerenciamento de atendimentos, pacientes e médicos
 
 O objetivo é criar uma aplicação **funcional, segura e organizada**, e entregar conforme os requisitos do trabalho da disciplina.
 
@@ -35,7 +35,7 @@ O objetivo é criar uma aplicação **funcional, segura e organizada**, e entreg
 ## Funcionalidades Principais
 - **Autenticação segura**: login e cadastro de pacientes e secretários
 - **Agendamento de consultas**: verificação de horário disponível e confirmação de agendamento
-- **Consulta automática de CEP**: integração com API ViaCEP para preencher endereços
+- **Consulta automática de CEP**: Para preencher endereços automaticamente
 - **Previsão do clima**: integração com OpenWeatherMap para alertas no dia da consulta
 - **Painel administrativo**: lista de agendamentos, alteração de status e cancelamentos
 - **Interface responsiva**: adaptação para diferentes tamanhos de tela
@@ -97,7 +97,7 @@ cd Projeto_Clinica
 Entre na pasta:
 
 ```
-    cd backend
+cd backend
 ```
 
 Instale as dependências:
@@ -181,15 +181,15 @@ No MongoDB Compass, cole esse link no campo de conexão e clique em **Connect**.
 
 ## Uso do Sistema
 
-1. Cadastro/Login
+### Cadastro/Login
 - Paciente ou secretário cria conta e realiza login.
 
-2. Agendamento de Consultas
+### Agendamento de Consultas
 
 - Pacientes selecionam especialidade, médico, data e horário disponíveis.
 - Confirmação do agendamento com alerta de previsão do tempo.
 
-3. Painel Administrativo
+### Painel Administrativo
 
 - Secretários acessam todos os agendamentos, podendo alterar status ou cancelar consultas.
 - Secretários acessam todos os pacientes cadastrados no sistema, podendo excluir um paciente.
