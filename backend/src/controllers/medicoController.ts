@@ -50,3 +50,13 @@ export const removerMedico = async (req: Request, res: Response) => {
     res.status(500).json({ msg: "Erro ao remover médico" })
   }
 }
+
+export const listarEspecialidades = async (req: Request, res: Response) => {
+  try {
+    const especialidades = await Medico.distinct("especialidade");
+    res.status(200).json(especialidades);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Erro ao buscar especialidades" });
+  }
+};

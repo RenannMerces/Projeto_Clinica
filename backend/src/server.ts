@@ -5,6 +5,9 @@ import { connectDB } from "./config/database"
 import dotenv from "dotenv"
 import usuarioRoutes from "./routes/usuarioRoutes"
 import medicoRoutes from "./routes/medicoRoutes"
+import agendamentoRoutes from "./routes/agendamentoRoutes";
+import climaRoutes from "./routes/climaRoutes";
+
 
 const app = express()
 
@@ -16,7 +19,9 @@ app.use(express.json())
 // Rotas
 app.use("/usuarios", usuarioRoutes)
 app.use("/medicos", medicoRoutes)
+app.use("/clima", climaRoutes);
 app.use("/auth", authRoutes)
+app.use("/agendamentos", agendamentoRoutes);
 
 // conectar banco
 connectDB()

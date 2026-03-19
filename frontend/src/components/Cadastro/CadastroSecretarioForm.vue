@@ -2,7 +2,7 @@
   <div class="register-container">
     <EscolhaCadastro />
     <h1>SECRETÁRIO</h1>
-    <h3>Cadastre um novo secretário</h3>
+    <h3>Cadastre um novo secretário!</h3>
 
     <form @submit.prevent="cadastrar">
 

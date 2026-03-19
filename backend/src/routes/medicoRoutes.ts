@@ -3,6 +3,7 @@ import { cadastrarMedico } from "../controllers/medicoController"
 import { autenticar, autorizar } from "../middlewares/authMiddleware"
 import { listarMedicos } from "../controllers/medicoController"
 import { removerMedico } from "../controllers/medicoController"
+import { listarEspecialidades } from "../controllers/medicoController"
 
 const router = express.Router()
 
@@ -18,6 +19,12 @@ router.get(
   "/",
   autenticar,
   listarMedicos
+)
+
+router.get(
+  "/especialidades",
+  autenticar,
+  listarEspecialidades
 )
 
 router.delete(
