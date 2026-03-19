@@ -107,16 +107,21 @@ export const listarAgendamentosPaciente = async (req: Request, res: Response) =>
 export const cancelarAgendamento = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const pacienteId = req.usuario?.id;
+    const usuarioId = req.usuario?.id;
+    const tipo = req.usuario?.tipo;
 
-    if (!pacienteId) {
+    if (!usuarioId) {
       return res.status(401).json({ msg: "Não autenticado" });
     }
 
-    const agendamento = await Agendamento.findOneAndDelete({
-      _id: id,
-      pacienteId,
-    });
+    let filtro: any = { _id: id };
+
+    // 🔒 paciente só cancela o próprio
+    if (tipo === "paciente") {
+      filtro.pacienteId = usuarioId;
+    }
+
+    const agendamento = await Agendamento.findOneAndDelete(filtro);
 
     if (!agendamento) {
       return res.status(404).json({ msg: "Agendamento não encontrado" });
@@ -127,5 +132,37 @@ export const cancelarAgendamento = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Erro ao cancelar agendamento" });
+  }
+};
+
+export const atualizarStatusAgendamento = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const statusValidos = ["pendente", "confirmado", "finalizado"];
+
+    if (!statusValidos.includes(status)) {
+      return res.status(400).json({ msg: "Status inválido" });
+    }
+
+    const agendamento = await Agendamento.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!agendamento) {
+      return res.status(404).json({ msg: "Agendamento não encontrado" });
+    }
+
+    res.status(200).json({
+      msg: "Status atualizado",
+      agendamento
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Erro ao atualizar status" });
   }
 };

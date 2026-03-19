@@ -37,7 +37,7 @@ const AgendamentoSchema: Schema = new Schema(
 
     status: { 
       type: String, 
-      enum: ["pendente", "confirmado", "cancelado"],
+      enum: ["pendente", "confirmado", "finalizado", "cancelado"],
       default: "pendente" 
     },
   },

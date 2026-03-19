@@ -1,10 +1,12 @@
-import { Request } from "express"
+export {}; // 🔥 importante para transformar em module
 
-declare module "express" {
-  interface Request {
-    usuario?: {
-      id: string
-      tipo: string
+declare global {
+  namespace Express {
+    interface Request {
+      usuario?: {
+        id: string;
+        tipo: string;
+      };
     }
   }
 }

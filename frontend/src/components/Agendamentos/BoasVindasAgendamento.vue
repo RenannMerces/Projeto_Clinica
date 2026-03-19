@@ -5,7 +5,7 @@
   <div class="container">
 
     <h2 class="titulo">
-      Seja bem-vindo, <span class="destaque">{{ usuario.nome }}</span>!
+      Seja bem-vindo!
     </h2>
 
     <button class="btn-agendar" @click="abrirForm = true">
@@ -15,7 +15,7 @@
   </div>
 
   <!-- FORMULÁRIO -->
-<FormAgendamento :visivel="abrirForm" @fechar="abrirForm = false"/>
+<FormAgendamento :visivel="abrirForm" @fechar="abrirForm = false" @agendamento-criado="$emit('agendamento-criado')"/>
 
 
 </section>

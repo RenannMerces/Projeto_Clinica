@@ -270,6 +270,7 @@ export default {
         });
 
         Swal.fire("Agendamento realizado!", "", "success");
+        this.$emit("agendamento-criado");
         this.fechar();
 
       } catch (err) {

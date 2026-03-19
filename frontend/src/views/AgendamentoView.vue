@@ -2,8 +2,8 @@
     <div>
         <NavBar />
         <BannerAgendamento />
-        <BoasVindas :usuario="usuarioLogado"/>
-        <TabelaAgendamentos />
+        <BoasVindas :usuario="usuarioLogado" @agendamento-criado="atualizarTabela"/>
+        <TabelaAgendamentos ref="tabela"/>
     </div>
     
 </template>
@@ -28,6 +28,10 @@
             nome: "Renan Mercês",
             }
         }
+        }, methods: {
+            atualizarTabela() {
+                this.$refs.tabela.buscarAgendamentos();
+            }
         }
     }
 </script>

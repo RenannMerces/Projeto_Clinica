@@ -12,32 +12,51 @@
 
         <thead>
           <tr>
-            <th>Data</th>
-            <th>Horário</th>
             <th>Médico</th>
+            <th>Especialidade</th>
+            <th>Data</th>
+            <th>Hora</th>
             <th>Status</th>
             <th>Ação</th>
           </tr>
         </thead>
 
-        <tbody>
+      <tbody>
 
-          <tr v-for="(agendamento, index) in agendamentos" :key="index">
-            <td data-label="Data">{{ agendamento.data }}</td>
-            <td data-label="Horário">{{ agendamento.horario }}</td>
-            <td data-label="Médico">{{ agendamento.medico }}</td>
-            <td data-label="Status">
-              <span class="status">{{ agendamento.status }}</span>
-            </td>
-            <td data-label="Ação">
-              <button class="btn-cancelar">
-                Cancelar
-              </button>
-            </td>
-          </tr>
+        <tr v-for="agendamento in agendamentos" :key="agendamento._id">
 
-        </tbody>
+          <td data-label="Médico">
+            {{ agendamento.medicoId?.nome }}
+          </td>
 
+          <td data-label="Especialidade">
+            {{ agendamento.medicoId?.especialidade }}
+          </td>
+
+          <td data-label="Data">
+            {{ formatarData(agendamento.data) }}
+          </td>
+
+          <td data-label="Hora">
+            {{ agendamento.horario }}
+          </td>
+
+          <td data-label="Status">
+            <span class="status">{{ agendamento.status }}</span>
+          </td>
+
+          <td data-label="Ação">
+            <button 
+              class="btn-cancelar"
+              @click="cancelarAgendamento(agendamento._id)"
+            >
+              Cancelar
+            </button>
+          </td>
+
+        </tr>
+
+      </tbody>
       </table>
 
     </div>
@@ -49,38 +68,62 @@
 </template>
 
 <script>
-export default {
+import axios from "axios";
+import Swal from "sweetalert2";
 
+export default {
   name: "TabelaAgendamentos",
 
-  data(){
-    return{
+  data() {
+    return {
+      agendamentos: []
+    };
+  },
 
-      agendamentos:[
-        {
-          data:"20/03/2026",
-          horario:"09:00",
-          medico:"Dr. João Silva",
-          status:"Confirmado"
-        },
-        {
-          data:"22/03/2026",
-          horario:"14:30",
-          medico:"Dra. Ana Costa",
-          status:"Pendente"
-        },
-        {
-          data:"25/03/2026",
-          horario:"11:00",
-          medico:"Dr. Pedro Santos",
-          status:"Confirmado"
-        }
-      ]
+  mounted() {
+    this.buscarAgendamentos();
+  },
 
+  methods: {
+    async buscarAgendamentos() {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get("http://localhost:3000/agendamentos/meus", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        this.agendamentos = res.data;
+
+      } catch (err) {
+        console.error("Erro ao buscar agendamentos:", err);
+      }
+    },
+
+    async cancelarAgendamento(id) {
+      try {
+        const token = localStorage.getItem("token");
+
+        await axios.delete(`http://localhost:3000/agendamentos/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        Swal.fire("Cancelado!", "Agendamento removido.", "success");
+
+        this.buscarAgendamentos(); // 🔄 atualiza lista
+
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Erro", "Não foi possível cancelar", "error");
+      }
+    },
+
+    formatarData(data) {
+      const [ano, mes, dia] = data.split("-");
+      return `${dia}/${mes}/${ano}`;
     }
   }
-
-}
+};
 </script>
 
 <style scoped>
