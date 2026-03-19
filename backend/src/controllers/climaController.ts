@@ -5,7 +5,7 @@ export const buscarClima = async (req: Request, res: Response) => {
   try {
     const { data } = req.query;
 
-    // ✅ validação da data
+    //  validação da data
     if (!data || typeof data !== "string") {
       return res.status(400).json({ msg: "Data é obrigatória e deve ser válida" });
     }
@@ -13,7 +13,7 @@ export const buscarClima = async (req: Request, res: Response) => {
     const cidade = "Santo Antonio de Jesus,BR";
     const apiKey = process.env.OPENWEATHER_KEY;
 
-    // ✅ valida API KEY
+    //  valida API KEY
     if (!apiKey) {
       console.error("API KEY não definida no .env");
       return res.status(500).json({ msg: "Erro interno: API key não configurada" });
@@ -33,7 +33,7 @@ export const buscarClima = async (req: Request, res: Response) => {
       }
     );
 
-    // ✅ garante que list existe
+    //  garante que list existe
     if (!response.data?.list) {
       return res.status(500).json({ msg: "Erro ao processar dados da API" });
     }
@@ -47,7 +47,7 @@ export const buscarClima = async (req: Request, res: Response) => {
       return res.json(null);
     }
 
-    // ✅ pega horário mais próximo de 12h
+    //  pega horário mais próximo de 12h
     const previsao = previsoesDoDia.reduce((prev: any, curr: any) => {
       const horaAtual = new Date(curr.dt_txt).getHours();
       const horaPrev = new Date(prev.dt_txt).getHours();

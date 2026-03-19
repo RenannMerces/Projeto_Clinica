@@ -4,12 +4,12 @@ import Usuario from "../models/Usuario"
 export const listarPacientes = async (req: Request, res: Response) => {
   try {
 
-    // 🔥 Buscar apenas pacientes
+    // Buscar apenas pacientes
     const pacientes = await Usuario.find({ tipo: "paciente" })
-      .select("-senha") // 🔒 nunca retornar senha
+      .select("-senha") // nunca retornar senha
       .sort({ createdAt: -1 }) // opcional: mais recentes primeiro
 
-    // 🔥 Se não houver pacientes
+    // Se não houver pacientes
     if (!pacientes.length) {
       return res.status(200).json([])
     }

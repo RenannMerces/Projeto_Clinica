@@ -7,7 +7,7 @@ import { listarEspecialidades } from "../controllers/medicoController"
 
 const router = express.Router()
 
-// 🔒 Apenas secretário pode cadastrar médico
+// Apenas secretário pode cadastrar médico
 router.post(
   "/",
   autenticar,

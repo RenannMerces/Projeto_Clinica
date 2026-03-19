@@ -116,7 +116,7 @@ export const cancelarAgendamento = async (req: Request, res: Response) => {
 
     let filtro: any = { _id: id };
 
-    // 🔒 paciente só cancela o próprio
+    // paciente só cancela o próprio
     if (tipo === "paciente") {
       filtro.pacienteId = usuarioId;
     }

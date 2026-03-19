@@ -5,7 +5,7 @@ import { deletarPaciente } from "../controllers/usuarioController"
 
 const router = express.Router()
 
-// 🔒 Apenas secretário pode acessar
+// Apenas secretário pode acessar
 router.get(
   "/pacientes",
   autenticar,
