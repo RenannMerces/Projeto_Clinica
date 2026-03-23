@@ -28,10 +28,25 @@
 <style scoped>
 
 .banner {
+  position: relative;
   width: 100%;
-  padding: 60px 20px;
-  background: linear-gradient(135deg, #3BAAB1, #2a7f85);
+  padding: 80px 20px;
+  background: url("/public/img/clinica.jpg") center/cover no-repeat;
+  overflow: hidden;
   color: white;
+}
+
+.banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(40, 63, 64, 0.593), rgba(86, 188, 195, 0.8));
+  z-index: 0;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 1;
 }
 
 .banner-content {
