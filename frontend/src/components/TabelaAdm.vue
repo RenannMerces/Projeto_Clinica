@@ -1,8 +1,8 @@
 <template>
-<section class="agendamentos">
+<div>
+    <BannerAdm />
+    <section class="agendamentos">
   <div class="container">
-    <h2>Agendamentos</h2>
-
     <div class="tabela-wrapper">
       <table class="tabela-agendamentos">
 
@@ -74,14 +74,20 @@
     </div>
   </div>
 </section>
+</div>
+
 </template>
 
 <script>
+import BannerAdm from "../components/BannerAdm.vue"
 import axios from "axios";
 import Swal from "sweetalert2";
 
 export default {
   name: "TabelaAdm",
+  components: {
+    BannerAdm
+  },
 
   data() {
     return {
