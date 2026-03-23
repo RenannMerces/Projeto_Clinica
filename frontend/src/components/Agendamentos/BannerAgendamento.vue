@@ -9,7 +9,7 @@
         <!-- ESQUERDA -->
         <div class="banner-left">
           <div class="logo-clinica">
-            <img src="/img/logo_extended.png" alt="Clínica Mercês">
+            <img src="/img/logo_extended_white.png" alt="Clínica Mercês">
           </div>
 
           <p>
